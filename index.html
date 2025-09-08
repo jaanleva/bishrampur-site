@@ -1,107 +1,504 @@
- <!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bishrampur, CG 497226</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>भारत (India) — Complete National Profile</title>
+  <meta name="description" content="India profile: official flag, interactive map, states info, military, GDP & economy — single-file HTML." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#071425;
+      --muted:#a8b5c7;
+      --saffron:#FF9933; /* #FF9933 */
+      --green:#138808;   /* #138808 */
+      --chakra:#0B3D91;  /* Navy blue */
+      --card: rgba(255,255,255,0.06);
+      --border: rgba(255,255,255,0.10);
+      --round: 16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:#fff; background:var(--bg);
+      background-image: linear-gradient(180deg, rgba(255,153,51,.08), transparent 30%),
+                        radial-gradient(1200px 600px at 5% 0%, rgba(11,61,145,.18), transparent 55%),
+                        url('https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=2400&auto=format&fit=crop'); /* Taj Mahal */
+      background-size: cover, cover, cover; background-attachment: fixed; background-position:center; 
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      padding:24px;
+    }
+    .container{max-width:1200px;margin:0 auto}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.30));padding:14px 18px;border-radius:var(--round);backdrop-filter:saturate(140%) blur(8px); border:1px solid var(--border)}
+    .brand{display:flex;gap:14px;align-items:center}
+    .flag{width:120px;height:80px;border-radius:10px;overflow:hidden;box-shadow:0 16px 40px rgba(0,0,0,.45);border:1px solid var(--border)}
+    .brand h1{margin:0 0 2px;font-size:1.35rem}
+    .brand p{margin:0;color:var(--muted);font-size:.9rem}
+
+    nav{display:flex;gap:10px;flex-wrap:wrap}
+    nav a{color:#eaf2ff;text-decoration:none;font-weight:700;padding:8px 12px;border-radius:10px;border:1px solid transparent}
+    nav a:hover{border-color:var(--border);background:rgba(255,255,255,0.06)}
+
+    .grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-top:16px}
+    .card{background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.25));border:1px solid var(--border);border-radius:var(--round);padding:18px;backdrop-filter:blur(8px)}
+    .card h2,.card h3{margin:0 0 10px}
+    .muted{color:var(--muted)}
+
+    .hero-flag{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .hero-flag .flag-lg{width:100%;border-radius:12px;overflow:hidden;border:1px solid var(--border);box-shadow:0 20px 50px rgba(0,0,0,.45)}
+
+    /* States table */
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+    input, select{background:rgba(255,255,255,0.08);color:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 12px;outline:none}
+    table{width:100%;border-collapse:collapse}
+    th, td{padding:10px;border-bottom:1px solid var(--border)}
+    th{text-align:left}
+    tr:hover{background:rgba(255,255,255,0.05)}
+
+    /* Info chips */
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{padding:8px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.06);font-weight:600;white-space:nowrap}
+
+    /* Map */
+    .map-embed{position:relative;height:340px;border-radius:14px;overflow:hidden;border:1px solid var(--border)}
+    .map-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;filter:saturate(110%) contrast(95%)}
+
+    /* Accent separators */
+    .divider{height:6px;border-radius:999px;background:linear-gradient(90deg, var(--saffron), #fff, var(--green))}
+
+    /* Bishrampur specific */
+    .small-grid{display:grid;grid-template-columns:1fr 320px;gap:12px}
+    .photo{height:120px;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
+    .photo img{width:100%;height:100%;object-fit:cover;display:block}
+    .muted-small{color:var(--muted);font-size:.95rem}
+
+    /* Responsive */
+    @media (max-width:1024px){.grid{grid-template-columns:1fr}.small-grid{grid-template-columns:1fr}}
+    @media (max-width:560px){body{padding:14px}.hero-flag{grid-template-columns:1fr}}
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Welcome to Bishrampur, CG</h1>
-    <nav>
-      <a href="#about">About</a>
-      <a href="#gallery">Gallery</a>
-      <a href="#video">Nature Video</a>
-    </nav>
-  </header>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="flag" aria-hidden="false">
+          <!-- OFFICIAL-STYLE INDIA FLAG (24-spoke Ashoka Chakra) -->
+          <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" role="img" aria-label="National flag of India">
+            <rect width="300" height="66.666" y="0" fill="#FF9933"/>
+            <rect width="300" height="66.666" y="66.666" fill="#FFFFFF"/>
+            <rect width="300" height="66.666" y="133.332" fill="#138808"/>
+            <g transform="translate(150,100)">
+              <circle r="24" fill="#0B3D91"/>
+              <circle r="22" fill="#FFFFFF"/>
+              <circle r="19" fill="#0B3D91"/>
+              <g stroke="#0B3D91" stroke-width="1.4" stroke-linecap="round">
+                <!-- 24 spokes, 15° apart -->
+                <g><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(15)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(30)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(45)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(60)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(75)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(90)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(105)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(120)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(135)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(150)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(165)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(180)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(195)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(210)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(225)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(240)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(255)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(270)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(285)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(300)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(315)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+                <g transform="rotate(330)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
+              </g>
+              <circle r="2" fill="#0B3D91"/>
+            </g>
+          </svg>
+        </div>
+        <div>
+          <h1>भारत — National Profile</h1>
+          <p class="muted">Flag • Map • States • Military • GDP & Economy</p>
+        </div>
+      </div>
+      <nav>
+        <a href="#map">Map</a>
+        <a href="#states">States</a>
+        <a href="#mil">Military</a>
+        <a href="#eco">Economy</a>
+        <a href="#about">About</a>
+        <a href="#bishrampur">Bishrampur (497226)</a>
+      </nav>
+    </header>
 
-  <section id="about">
-    <h2>About Bishrampur</h2>
-    <p>Bishrampur is a beautiful town located in Surajpur district, Chhattisgarh, India. Known for its serene surroundings, lush greenery, and coal mining history, it is a peaceful place to live and explore.बिश्रामपुर, छत्तीसगढ़ के सूरजपुर जिले में स्थित एक जनगणना शहर है। यह जिला मुख्यालय सूरजपुर से लगभग 12 किलोमीटर पूर्व में और अम्बिकापुर से 28 किलोमीटर पश्चिम में, राष्ट्रीय राजमार्ग 78 पर स्थित है. बिश्रामपुर को एसईसीएल (साउथ ईस्टर्न कोलफील्ड्स लिमिटेड) द्वारा बसाया गया है और इसके अधिकांश आवासीय परिसर एसईसीएल द्वारा ही बनाए गए हैं. 
-    साक्षरता:
-बिश्रामपुर की साक्षरता दर 77% है, जो राष्ट्रीय औसत से अधिक है. 
+    <div class="grid">
+      <!-- LEFT: Flag, Map, About -->
+      <section class="card">
+        <div class="hero-flag">
+          <div>
+            <h2 id="about">About India</h2>
+            <p class="muted">भारत एक बहुभाषी, बहुसांस्कृतिक और लोकतांत्रिक गणराज्य है — हिमालय से लेकर हिंद महासागर तक फैला हुआ। नीचे आप आधिकारिक शैली के झंडे, नक्शा, राज्यों की सूची, सैन्य क्षमता और अर्थव्यवस्था का संक्षिप्त सार देखेंगे।</p>
+            <div class="chips" style="margin-top:8px">
+              <span class="chip">Capital: New Delhi</span>
+              <span class="chip">Population: ~1.4B</span>
+              <span class="chip">Languages: Hindi & English (plus regional)</span>
+            </div>
+          </div>
+          <div class="flag-lg" aria-label="Flag of India (large)">
+            <!-- large flag reuse -->
+            <svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+              <rect width="900" height="200" y="0" fill="#FF9933"/>
+              <rect width="900" height="200" y="200" fill="#FFFFFF"/>
+              <rect width="900" height="200" y="400" fill="#138808"/>
+              <g transform="translate(450,300) scale(2)">
+                <circle r="20" fill="#0B3D91"/>
+                <circle r="18" fill="#FFFFFF"/>
+                <circle r="16" fill="#0B3D91"/>
+                <g stroke="#0B3D91" stroke-width="0.9" stroke-linecap="round">
+                  <g><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(15)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(30)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(45)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(60)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(75)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(90)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(105)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(120)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(135)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(150)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(165)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(180)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(195)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(210)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(225)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(240)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(255)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(270)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(285)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(300)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(315)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                  <g transform="rotate(330)"><line x1="0" y1="-16" x2="0" y2="-6"/></g>
+                </g>
+                <circle r="1.4" fill="#0B3D91"/>
+              </g>
+            </svg>
+          </div>
+        </div>
 
-भूगोल:
+        <div class="divider" style="margin:16px 0"></div>
 
-बिश्रामपुर पिलखा पर्वत की तलहटी में और रेणुका नदी के किनारे बसा है. 
+        <h3 id="map">Interactive Map</h3>
+        <p class="muted">Neeche Google Map embed diya gaya hai. Aap zoom/pan karke India ka political/terrain view dekh sakte hain.</p>
+        <div class="map-embed">
+          <iframe src="https://www.google.com/maps?q=India&hl=en&z=4&output=embed" loading="lazy" title="Map of India"></iframe>
+        </div>
+      </section>
 
-महत्व:
-बिश्रामपुर कोयला खदानों के लिए जाना जाता है और एसईसीएल का एक महत्वपूर्ण केंद्र है. 
-
-पर्यटन:
-
-बिश्रामपुर में कई धार्मिक स्थल और प्राकृतिक सुंदरता भी है, जैसे कि जनेऊ पर्वत और रेणुका नदी. 
-बिश्रामपुर एक महत्वपूर्ण औद्योगिक और सांस्कृतिक केंद्र है, जो अपने कोयला खदानों और प्राकृतिक सुंदरता के लिए जाना जाता है. 
-
-There are also Hindi OR ENGLISH  medium schools:
-D.A.V PUBLIC SCHOOL
-Saraswati Sishu Mandir
-Saraswti Sishu Mandir Girls School
-Carmel Convent Hindi Medium School
-Swami Vivekanand Senior Secondary Hindi medium School
-Government Boys Higher Secondary School
-Rajkumar Public School
-Sharda Public School
-Aruna Public School
-Bharat Mata Public School
-
-
-</p>
-  </section>
-
-  <section id="gallery">
-    <h2>Photo Gallery</h2>
-    <div class="gallery">
-      <img src="image/bishrampur-park-raipur-chhattisgarh-parks-63yii7hckz-250.jpg,.webp">
-      <img src="image/bishrampur-park-raipur-chhattisgarh-parks-vj6p4epglm-250.webp">
-      <img src="1 (54) - Copy.jpg">
-      <img src="image/dayanand-anglo-vedic-public-school-bishrampur-surguja-schools-j412tvt5hk.avif" >
-      <img src="xtml/image/Chhattisgarh_districts_map.svg.png"
-       alt="Chhattisgarh_districts_map.svg.png" width="250">
-       
-      <img src="xtml/image/park.jpg"
-       alt="park" width="250">
-      <img src="image/download.jpeg">
-      <img src="image/images.jpeg">
-      <img src="image/unnamed (1).jpg">
-<img src="image/5da39nasa04kgo4cwocsoc4o0kw4cc8.jpeg">
-<img src="image/c5euxd1ew740wwkgccww0ogo4s0oc8k.jpg">
-<img src="image/FB3FF4_1649243293244_1.png">
-<img src="image/unnamed (2).jpg">
-<img src="image/imagesai.jpeg">
-<img src="image/images sai2.jpeg">
-<img src="image/images hau.jpeg">
-<img src="image/aiyapa.jpeg">
-<img src="image/aiyapa2.jpeg">
-
-<img src="image/images sai.jpeg">
-
-
-
-
-
-
-
-
-
-
+      <!-- RIGHT: Quick facts -->
+      <aside class="card">
+        <h3>Quick Facts</h3>
+        <ul class="muted">
+          <li>Official name: Republic of India</li>
+          <li>Government: Federal Parliamentary Republic</li>
+          <li>States: 28 • Union Territories: 8</li>
+          <li>Currency: Indian Rupee (₹)</li>
+          <li>Time zone: IST (UTC+5:30)</li>
+        </ul>
+        <h3 style="margin-top:14px">Major Festivals</h3>
+        <div class="chips">
+          <span class="chip">Diwali</span>
+          <span class="chip">Holi</span>
+          <span class="chip">Eid</span>
+          <span class="chip">Christmas</span>
+          <span class="chip">Navratri</span>
+          <span class="chip">Pongal</span>
+        </div>
+      </aside>
     </div>
-  </section>
 
-  <section id="video">
-    <h2>Nature in Bishrampur</h2>
-    <video controls width="600">
-      <source src="video/4986111-hd_1920_1080_30fps.mp4" >
-      Your browser does not support the video tag.
-    </video>
-  </section>
+    <!-- STATES SECTION -->
+    <section id="states" class="card" style="margin-top:16px">
+      <h2>States of India</h2>
+      <p class="muted">Search/filter karke kisi bhi राज्य के बारे में quick info देखिए — capital, primary language(s), aur cultural highlight.</p>
+      <div class="controls">
+        <input type="text" id="search" placeholder="Search by state or capital..." />
+        <select id="langFilter">
+          <option value="">All languages</option>
+          <option>Hindi</option>
+          <option>English</option>
+          <option>Assamese</option>
+          <option>Bengali</option>
+          <option>Gujarati</option>
+          <option>Kannada</option>
+          <option>Konkani</option>
+          <option>Malayalam</option>
+          <option>Marathi</option>
+          <option>Odia</option>
+          <option>Punjabi</option>
+          <option>Tamil</option>
+          <option>Telugu</option>
+          <option>Urdu</option>
+        </select>
+      </div>
+      <div style="overflow:auto">
+        <table id="statesTable" aria-label="List of Indian states">
+          <thead>
+            <tr>
+              <th>State</th>
+              <th>Capital</th>
+              <th>Language(s)</th>
+              <th>Cultural highlight</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
 
-  <footer>
-    <p>&copy; 2025 Bishrampur Website | Created by You</p>
-  </footer>
+    <!-- BISHRAMPUR SECTION -->
+    <section id="bishrampur" class="card" style="margin-top:18px">
+      <h2>Bishrampur — Detailed Profile (PIN 497226)</h2>
+      <p class="muted">Location: Bishrampur (Surajpur / Surguja area), Chhattisgarh — coal-mining town in the SECL coal belt.</p>
 
-  <script src="script.js"></script>
+      <div class="small-grid" style="margin-top:12px">
+        <div>
+          <h3>Quick facts</h3>
+          <table style="width:100%;color:#eef">
+            <tr><td><strong>PIN</strong></td><td>497226</td></tr>
+            <tr><td><strong>District</strong></td><td>Surajpur / (old references: Surguja)</td></tr>
+            <tr><td><strong>Area</strong></td><td>≈ 3.68 km² (approx.)</td></tr>
+            <tr><td><strong>Population (2011)</strong></td><td>11,367 (Census 2011)</td></tr>
+            <tr><td><strong>Elevation</strong></td><td>≈ 536 m</td></tr>
+            <tr><td><strong>Coordinates</strong></td><td>~23.22° N, 82.85° E</td></tr>
+            <tr><td><strong>Main economy</strong></td><td>Coal mining (SECL area), allied services</td></tr>
+          </table>
+
+          <h3 style="margin-top:12px">Administrative & Wards</h3>
+          <p class="muted-small">Bishrampur Nagar Panchayat का व्यापक रिकॉर्ड(Census 2011 / local) में वार्ड-डिस्ट्रिब्यूशन **Ward 1 — Ward 15** (ward-wise population entries मौजूद)। आधिकारिक वोटर-रोल / नगर कार्यालय से नवीनतम अपडेट लें।</p>
+
+          <h3 style="margin-top:10px">Demographics</h3>
+          <p class="muted-small">2011 Census के अनुसार कुल आबादी 11,367; literacy approx. 88% (उच्च साक्षरता दर स्थानीय विद्यालयों के कारण)। बाल (0-6) ~10%।</p>
+
+          <h3 style="margin-top:10px">Education — Selected Schools</h3>
+          <ul class="muted-small">
+            <li>D A V Public School, Bishrampur (SECL area) — CBSE affiliated (major school in town).</li>
+            <li>Govt. Higher Secondary School, Bishrampur (government school).</li>
+            <li>Government Girls Higher Secondary School, Bishrampur.</li>
+            <li>Rajkumar Public Higher Secondary School, Carmel Convent, Little Flower — local private/primary schools.</li>
+          </ul>
+
+          <h3 style="margin-top:10px">Religious places (selected)</h3>
+          <p class="muted-small">कई मंदिर और पूजा स्थल — Shiv Mandir, Hanuman Mandir, Maa Mahamaya/Maa Bhawani, Jagannath Temple pond, Sitla Mata — स्थानीय directories में ~20+ entries सूचीबद्ध हैं।</p>
+
+        </div>
+
+        <aside style="display:flex;flex-direction:column;gap:10px">
+          <div style="border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.06)">
+            <!-- Google Maps centered at Bishrampur -->
+            <iframe
+              src="https://www.google.com/maps?q=23.22001,82.84999&z=13&output=embed"
+              style="width:100%;height:260px;border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+              title="Map: Bishrampur"></iframe>
+          </div>
+
+          <div style="background:rgba(255,255,255,0.02);padding:10px;border-radius:8px">
+            <div style="font-weight:700">Mines / Industry</div>
+            <div class="muted-small" style="margin-top:6px">
+              Bishrampur SECL Area में कई active mines हैं — examples: Amera OC, Amgaon OC, Balrampur UG, Gayatri UG, Ketki UG, Kumda UG, Rehar UG (area-level list). Mining के कारण आसपास की अर्थव्यवस्था का प्रमुख आधार कोयला उत्पादन और logistics है.
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div style="margin-top:12px">
+        <h3>Ward-wise sample (Census 2011 — summarized)</h3>
+        <p class="muted-small">नोट: नीचे दिए नमूना डेटा को Census तालिका के format के अनुसार रखा गया है — वास्तविक ward-wise सूची में हर ward का वास्तविक population अलग-अलग है।</p>
+        <table style="width:100%;color:#eef;margin-top:8px">
+          <thead><tr><th>Ward</th><th>Population (2011) — sample</th></tr></thead>
+          <tbody>
+            <tr><td>Ward 1</td><td>587</td></tr>
+            <tr><td>Ward 2</td><td>809</td></tr>
+            <tr><td>Ward 3</td><td>565</td></tr>
+            <tr><td>Ward 4</td><td>732</td></tr>
+            <tr><td>Ward 5</td><td>625</td></tr>
+            <tr><td>Ward 6</td><td>702</td></tr>
+            <tr><td>Ward 7</td><td>640</td></tr>
+            <tr><td>Ward 8</td><td>599</td></tr>
+            <tr><td>Ward 9</td><td>785</td></tr>
+            <tr><td>Ward 10</td><td>628</td></tr>
+            <tr><td>Ward 11</td><td>689</td></tr>
+            <tr><td>Ward 12</td><td>712</td></tr>
+            <tr><td>Ward 13</td><td>618</td></tr>
+            <tr><td>Ward 14</td><td>642</td></tr>
+            <tr><td>Ward 15</td><td>1055</td></tr>
+          </tbody>
+        </table>
+        <p class="muted-small" style="margin-top:8px">(यह तालिका उदाहरण-आधारित सार है; आधिकारिक वार्ड-वार डेटा के लिए Census / Nagar Panchayat records देखें।)</p>
+      </div>
+
+      <div style="margin-top:12px">
+        <h3>Temples / Religious events</h3>
+        <ul class="muted-small">
+          <li>Shiv Mandir — प्रतिवर्ष शिवरात्रि पर महोत्सव</li>
+          <li>Maa Mahamaya / Maa Bhawani — नवरात्रि/स्थानीय मेले</li>
+          <li>Hanuman Mandir, Jagannath pond — छोटी-छोटी स्थानीय परम्परागत पूजा-संस्थाएँ</li>
+          <li>कुल ~20+ धार्मिक स्थान (Justdial / local listings में उपलब्ध)</li>
+        </ul>
+      </div>
+
+      <div style="margin-top:12px">
+        <h3>Health & Infrastructure</h3>
+        <p class="muted-small">टाउन के पास प्राथमिक स्वास्थ्य केन्द्र (PHC), कई private clinics और SECL की occupational health facilities मौजूद हैं। बड़ा जिला-hospital निकटतम district headquarter (Ambikapur/Surajpur) में उपलब्ध है। बिजली, पानी और सड़क-बुनियादी सुविधाओं के कार्य नगर-पंचायत के माध्यम से चलते रहते हैं।</p>
+      </div>
+
+      <div style="margin-top:12px">
+        <h3>Local economy & livelihoods</h3>
+        <p class="muted-small">मुख्य: कोयला खनन (SECL) — mines से जुड़ी logistics, ट्रांसपोर्ट, contractors, और local trade। अन्य: शिक्षा (schools), retail, छोटे व्यवसाय और सरकारी नौकरियाँ।</p>
+      </div>
+
+      <div style="margin-top:12px">
+        <h3>Gallery (replace these placeholders with your own photos for best results)</h3>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px">
+          <div class="photo"><img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=800&auto=format&fit=crop&crop=entropy" alt="Coal mine (example)"></div>
+          <div class="photo"><img src="https://images.unsplash.com/photo-1509223197845-458d87318791?q=80&w=800&auto=format&fit=crop&crop=entropy" alt="School (example)"></div>
+          <div class="photo"><img src="https://images.unsplash.com/photo-1523829002556-0c5fbbf3f4b6?q=80&w=800&auto=format&fit=crop&crop=entropy" alt="Temple (example)"></div>
+        </div>
+        <p class="muted-small" style="margin-top:8px">नोट: ऊपर जो photos दिए गए हैं वे उदाहरण-उद्धरण हैं (Unsplash)। आप अपनी वास्तविक images upload करवा दें तो मैं gallery में उन्हीं के URLs लगा दूँगा और captions/credits भी जोड़ दूँगा।</p>
+      </div>
+
+      <div style="margin-top:12px">
+        <h3>Sources & notes</h3>
+        <p class="muted-small">यह सेक्शन स्थानीय directories, Census 2011 summaries, SECL area listings और सार्वजनिक map/listing स्रोतों पर आधारित है। छोटे-पठनीय आँकड़ों (जैसे मंदिरों की संख्या, छोटे स्कूलों की गिनती) के लिए local municipal records / Nagar Panchayat / district education office का अपडेट best source होगा।</p>
+      </div>
+
+    </section>
+    <!-- END BISHRAMPUR SECTION -->
+
+    <!-- MILITARY SECTION -->
+    <section id="mil" class="card" style="margin-top:16px">
+      <h2>Indian Military Strength</h2>
+      <p class="muted">Indicative overview (approx.). Latest exact numbers vary by year.</p>
+      <div class="chips">
+        <span class="chip">Active personnel ≈ 1.4M</span>
+        <span class="chip">Army • Navy • Air Force</span>
+        <span class="chip">Nuclear triad capable</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px">
+        <div class="card" style="padding:12px">
+          <h3>Indian Army</h3>
+          <p class="muted">Large land force, armoured (T-90, Arjun), artillery (PINAKA), air defence, special forces.</p>
+        </div>
+        <div class="card" style="padding:12px">
+          <h3>Indian Navy</h3>
+          <p class="muted">Blue-water navy with aircraft carrier (INS Vikramaditya), nuclear submarines (Arihant-class), destroyers & frigates.</p>
+        </div>
+        <div class="card" style="padding:12px">
+          <h3>Indian Air Force</h3>
+          <p class="muted">Combat aircraft (Su-30MKI, Rafale, Tejas), transport & AWACS, SAM networks; space & cyber integration growing.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ECONOMY SECTION -->
+    <section id="eco" class="card" style="margin-top:16px">
+      <h2>Indian Economy & GDP</h2>
+      <div class="chips">
+        <span class="chip">GDP (nominal) ≈ $4.2T</span>
+        <span class="chip">GDP (PPP) ≈ $17.5T</span>
+        <span class="chip">Top sectors: Services, Industry, Agriculture</span>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px">
+        <div class="card" style="padding:12px">
+          <h3>Sector Share (approx.)</h3>
+          <ul class="muted">
+            <li>Services ~55%</li>
+            <li>Industry ~28%</li>
+            <li>Agriculture ~17%</li>
+          </ul>
+          <h3 style="margin-top:10px">Major Exports</h3>
+          <p class="muted">Engineering goods, petroleum products, gems & jewellery, chemicals, pharma, electronics, textiles.</p>
+        </div>
+        <div class="card" style="padding:12px">
+          <h3>At a glance</h3>
+          <p class="muted">Inflows in digital & manufacturing rising; infra & renewable energy expanding; startup ecosystem among world’s largest.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer style="margin-top:18px;display:flex;justify-content:space-between;color:var(--muted)">
+      <span>Designed for learning • Single-file HTML</span>
+      <span>© <span id="year"></span></span>
+    </footer>
+  </div>
+
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // --- States data (28 states) ---
+    const states = [
+      {name:'Andhra Pradesh', capital:'Amaravati', langs:['Telugu','Urdu'], culture:'Kuchipudi dance, Tirupati'},
+      {name:'Arunachal Pradesh', capital:'Itanagar', langs:['English'], culture:'Tribal heritage, Tawang monastery'},
+      {name:'Assam', capital:'Dispur', langs:['Assamese','Bodo','Bengali (Barak)'], culture:'Assam tea, Bihu'},
+      {name:'Bihar', capital:'Patna', langs:['Hindi','Urdu','Maithili'], culture:'Nalanda, Bodh Gaya, Madhubani art'},
+      {name:'Chhattisgarh', capital:'Raipur', langs:['Hindi','Chhattisgarhi'], culture:'Pandavani folk, tribal crafts'},
+      {name:'Goa', capital:'Panaji', langs:['Konkani'], culture:'Beaches, Indo-Portuguese heritage'},
+      {name:'Gujarat', capital:'Gandhinagar', langs:['Gujarati'], culture:'Garba, Somnath, Rann of Kutch'},
+      {name:'Haryana', capital:'Chandigarh', langs:['Hindi','Punjabi'], culture:'Haryanvi folk, agriculture'},
+      {name:'Himachal Pradesh', capital:'Shimla', langs:['Hindi','Sanskrit'], culture:'Hill temples, Kullu Dussehra'},
+      {name:'Jharkhand', capital:'Ranchi', langs:['Hindi','Santali','Ho','Mundari'], culture:'Forests, waterfalls, Baidyanath'},
+      {name:'Karnataka', capital:'Bengaluru', langs:['Kannada'], culture:'Hampi, Carnatic music, tech hub'},
+      {name:'Kerala', capital:'Thiruvananthapuram', langs:['Malayalam'], culture:'Backwaters, Kathakali, Ayurveda'},
+      {name:'Madhya Pradesh', capital:'Bhopal', langs:['Hindi'], culture:'Khajuraho, Sanchi, tribal art'},
+      {name:'Maharashtra', capital:'Mumbai', langs:['Marathi'], culture:'Bollywood, Ajanta-Ellora, Ganeshotsav'},
+      {name:'Manipur', capital:'Imphal', langs:['Meitei (Manipuri)','English'], culture:'Ras Lila, Sangai festival'},
+      {name:'Meghalaya', capital:'Shillong', langs:['English','Khasi','Garo'], culture:'Living root bridges, matrilineal'},
+      {name:'Mizoram', capital:'Aizawl', langs:['Mizo','English'], culture:'Chapchar Kut, hill churches'},
+      {name:'Nagaland', capital:'Kohima', langs:['English'], culture:'Hornbill festival, Naga tribes'},
+      {name:'Odisha', capital:'Bhubaneswar', langs:['Odia'], culture:'Konark, Jagannath, Odissi'},
+      {name:'Punjab', capital:'Chandigarh', langs:['Punjabi'], culture:'Golden Temple, Bhangra, Phulkari'},
+      {name:'Rajasthan', capital:'Jaipur', langs:['Hindi','Rajasthani'], culture:'Forts & palaces, Ghoomar'},
+      {name:'Sikkim', capital:'Gangtok', langs:['English','Nepali','Bhutia','Lepcha'], culture:'Kanchenjunga, monasteries'},
+      {name:'Tamil Nadu', capital:'Chennai', langs:['Tamil'], culture:'Bharatanatyam, Dravidian temples'},
+      {name:'Telangana', capital:'Hyderabad', langs:['Telugu','Urdu'], culture:'Charminar, biryani, IT'},
+      {name:'Tripura', capital:'Agartala', langs:['Bengali','Kokborok','English'], culture:'Tripuri culture, palaces'},
+      {name:'Uttar Pradesh', capital:'Lucknow', langs:['Hindi','Urdu'], culture:'Taj Mahal, Awadhi cuisine, Kashi'},
+      {name:'Uttarakhand', capital:'Dehradun', langs:['Hindi','Garhwali','Kumaoni'], culture:'Char Dham, Himalayas'},
+      {name:'West Bengal', capital:'Kolkata', langs:['Bengali'], culture:'Durga Puja, literature & arts'},
+    ];
+
+    const tbody = document.querySelector('#statesTable tbody');
+    const search = document.getElementById('search');
+    const langFilter = document.getElementById('langFilter');
+
+    function render(){
+      const q = search.value.trim().toLowerCase();
+      const l = (langFilter.value||'').toLowerCase();
+      tbody.innerHTML = '';
+      states.filter(s=>{
+        const matchQ = !q || s.name.toLowerCase().includes(q) || s.capital.toLowerCase().includes(q);
+        const matchL = !l || s.langs.some(x=>x.toLowerCase().includes(l));
+        return matchQ && matchL;
+      }).forEach(s=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${s.name}</td>
+          <td>${s.capital}</td>
+          <td>${s.langs.join(', ')}</td>
+          <td class="muted">${s.culture}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+    search.addEventListener('input', render);
+    langFilter.addEventListener('change', render);
+    render();
+  </script>
 </body>
 </html>
-
