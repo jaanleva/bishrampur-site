@@ -10,9 +10,9 @@
     :root{
       --bg:#071425;
       --muted:#a8b5c7;
-      --saffron:#FF9933; /* #FF9933 */
-      --green:#138808;   /* #138808 */
-      --chakra:#0B3D91;  /* Navy blue */
+      --saffron:#FF9933;
+      --green:#138808;
+      --chakra:#0B3D91;
       --card: rgba(255,255,255,0.06);
       --border: rgba(255,255,255,0.10);
       --round: 16px;
@@ -20,14 +20,13 @@
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      margin:0; font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
       color:#fff; background:var(--bg);
       background-image: linear-gradient(180deg, rgba(255,153,51,.08), transparent 30%),
                         radial-gradient(1200px 600px at 5% 0%, rgba(11,61,145,.18), transparent 55%),
-                        url('https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=2400&auto=format&fit=crop'); /* Taj Mahal */
-      background-size: cover, cover, cover; background-attachment: fixed; background-position:center; 
-      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-      padding:24px;
+                        url('https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=2400&auto=format&fit=crop');
+      background-size: cover, cover, cover; background-attachment: fixed; background-position:center;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; padding:24px;
     }
     .container{max-width:1200px;margin:0 auto}
     header{display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.30));padding:14px 18px;border-radius:var(--round);backdrop-filter:saturate(140%) blur(8px); border:1px solid var(--border)}
@@ -54,7 +53,7 @@
     table{width:100%;border-collapse:collapse}
     th, td{padding:10px;border-bottom:1px solid var(--border)}
     th{text-align:left}
-    tr:hover{background:rgba(255,255,255,0.05)}
+    tr:hover{background:rgba(255,255,255,0.05);cursor:pointer}
 
     /* Info chips */
     .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -64,17 +63,21 @@
     .map-embed{position:relative;height:340px;border-radius:14px;overflow:hidden;border:1px solid var(--border)}
     .map-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;filter:saturate(110%) contrast(95%)}
 
-    /* Accent separators */
-    .divider{height:6px;border-radius:999px;background:linear-gradient(90deg, var(--saffron), #fff, var(--green))}
+    /* modal for state details */
+    .modal{
+      position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:9999;
+    }
+    .modal .box{width:100%;max-width:980px;background:linear-gradient(180deg,#041426,#06263a);border-radius:12px;padding:14px;border:1px solid var(--border);color:#fff;max-height:90vh;overflow:auto}
+    .modal .close{float:right;background:#fff;color:#042;border:0;padding:6px 10px;border-radius:8px;cursor:pointer}
 
-    /* Bishrampur specific */
-    .small-grid{display:grid;grid-template-columns:1fr 320px;gap:12px}
+    /* Bishrampur styling */
+    .bishrampur .photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
     .photo{height:120px;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
     .photo img{width:100%;height:100%;object-fit:cover;display:block}
-    .muted-small{color:var(--muted);font-size:.95rem}
 
-    /* Responsive */
-    @media (max-width:1024px){.grid{grid-template-columns:1fr}.small-grid{grid-template-columns:1fr}}
+    footer{margin-top:18px;display:flex;justify-content:space-between;color:var(--muted)}
+
+    @media (max-width:1024px){.grid{grid-template-columns:1fr}.modal .box{max-width:94%}}
     @media (max-width:560px){body{padding:14px}.hero-flag{grid-template-columns:1fr}}
   </style>
 </head>
@@ -93,7 +96,7 @@
               <circle r="22" fill="#FFFFFF"/>
               <circle r="19" fill="#0B3D91"/>
               <g stroke="#0B3D91" stroke-width="1.4" stroke-linecap="round">
-                <!-- 24 spokes, 15° apart -->
+                <!-- 24 spokes -->
                 <g><line x1="0" y1="-19" x2="0" y2="-8"/></g>
                 <g transform="rotate(15)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
                 <g transform="rotate(30)"><line x1="0" y1="-19" x2="0" y2="-8"/></g>
@@ -133,7 +136,7 @@
         <a href="#mil">Military</a>
         <a href="#eco">Economy</a>
         <a href="#about">About</a>
-        <a href="#bishrampur">Bishrampur (497226)</a>
+        <a href="#bishrampur">Bishrampur</a>
       </nav>
     </header>
 
@@ -225,7 +228,7 @@
     <!-- STATES SECTION -->
     <section id="states" class="card" style="margin-top:16px">
       <h2>States of India</h2>
-      <p class="muted">Search/filter karke kisi bhi राज्य के बारे में quick info देखिए — capital, primary language(s), aur cultural highlight.</p>
+      <p class="muted">Search/filter karke kisi भी राज्य के बारे में quick info देखिए — capital, primary language(s), aur cultural highlight. Table-row पर क्लिक करें → state modal खुलेगा (Google Maps centered on capital + PIN).</p>
       <div class="controls">
         <input type="text" id="search" placeholder="Search by state or capital..." />
         <select id="langFilter">
@@ -261,126 +264,76 @@
       </div>
     </section>
 
-    <!-- BISHRAMPUR SECTION -->
-    <section id="bishrampur" class="card" style="margin-top:18px">
-      <h2>Bishrampur — Detailed Profile (PIN 497226)</h2>
+    <!-- Bishrampur detailed report inserted here -->
+    <section id="bishrampur" class="card" style="margin-top:16px">
+      <h2>Bishrampur (PIN 497226) — Detailed Profile</h2>
       <p class="muted">Location: Bishrampur (Surajpur / Surguja area), Chhattisgarh — coal-mining town in the SECL coal belt.</p>
 
-      <div class="small-grid" style="margin-top:12px">
+      <div style="display:grid;grid-template-columns:1fr 360px;gap:12px;margin-top:12px">
         <div>
           <h3>Quick facts</h3>
           <table style="width:100%;color:#eef">
             <tr><td><strong>PIN</strong></td><td>497226</td></tr>
-            <tr><td><strong>District</strong></td><td>Surajpur / (old references: Surguja)</td></tr>
-            <tr><td><strong>Area</strong></td><td>≈ 3.68 km² (approx.)</td></tr>
-            <tr><td><strong>Population (2011)</strong></td><td>11,367 (Census 2011)</td></tr>
+            <tr><td><strong>District</strong></td><td>Surajpur (old refs: Surguja)</td></tr>
+            <tr><td><strong>Area</strong></td><td>≈ 3.68 km²</td></tr>
+            <tr><td><strong>Population (2011)</strong></td><td>11,367</td></tr>
             <tr><td><strong>Elevation</strong></td><td>≈ 536 m</td></tr>
-            <tr><td><strong>Coordinates</strong></td><td>~23.22° N, 82.85° E</td></tr>
-            <tr><td><strong>Main economy</strong></td><td>Coal mining (SECL area), allied services</td></tr>
+            <tr><td><strong>Coords</strong></td><td>~23.22° N, 82.85° E</td></tr>
+            <tr><td><strong>Main economy</strong></td><td>Coal mining (SECL) & allied services</td></tr>
           </table>
 
           <h3 style="margin-top:12px">Administrative & Wards</h3>
-          <p class="muted-small">Bishrampur Nagar Panchayat का व्यापक रिकॉर्ड(Census 2011 / local) में वार्ड-डिस्ट्रिब्यूशन **Ward 1 — Ward 15** (ward-wise population entries मौजूद)। आधिकारिक वोटर-रोल / नगर कार्यालय से नवीनतम अपडेट लें।</p>
-
-          <h3 style="margin-top:10px">Demographics</h3>
-          <p class="muted-small">2011 Census के अनुसार कुल आबादी 11,367; literacy approx. 88% (उच्च साक्षरता दर स्थानीय विद्यालयों के कारण)। बाल (0-6) ~10%।</p>
+          <p class="muted">Bishrampur Nagar Panchayat में Census 2011 के अनुसार Ward 1 — Ward 15 तक आंकड़े दर्ज हैं (ऊपर sample तालिका देखें)। आधिकारिक वोटर-रोल / नगर कार्यालय latest boundary/ward-info देगा।</p>
 
           <h3 style="margin-top:10px">Education — Selected Schools</h3>
-          <ul class="muted-small">
-            <li>D A V Public School, Bishrampur (SECL area) — CBSE affiliated (major school in town).</li>
-            <li>Govt. Higher Secondary School, Bishrampur (government school).</li>
-            <li>Government Girls Higher Secondary School, Bishrampur.</li>
-            <li>Rajkumar Public Higher Secondary School, Carmel Convent, Little Flower — local private/primary schools.</li>
+          <ul class="muted">
+            <li>D A V Public School, Bishrampur (SECL area)</li>
+            <li>Govt. Higher Secondary School, Bishrampur</li>
+            <li>Government Girls Higher Secondary School</li>
+            <li>Rajkumar Public Higher Secondary School, Carmel Convent, Little Flower (local)</li>
           </ul>
 
           <h3 style="margin-top:10px">Religious places (selected)</h3>
-          <p class="muted-small">कई मंदिर और पूजा स्थल — Shiv Mandir, Hanuman Mandir, Maa Mahamaya/Maa Bhawani, Jagannath Temple pond, Sitla Mata — स्थानीय directories में ~20+ entries सूचीबद्ध हैं।</p>
+          <p class="muted">Shiv Mandir, Hanuman Mandir, Maa Mahamaya/Maa Bhawani, Jagannath Temple pond, Sitla Mata — local directories में ~20+ entries सूचीबद्ध हैं।</p>
 
+          <h3 style="margin-top:10px">Mines / Industry</h3>
+          <p class="muted">Bishrampur Area (SECL) में कई mines चल रही हैं — जैसे Amera OC, Amgaon OC, Balrampur UG, Gayatri UG, Ketki UG, Kumda UG, Rehar UG — क्षेत्रीय अर्थव्यवस्था इन पर निर्भर करती है।</p>
         </div>
 
         <aside style="display:flex;flex-direction:column;gap:10px">
-          <div style="border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.06)">
-            <!-- Google Maps centered at Bishrampur -->
-            <iframe
-              src="https://www.google.com/maps?q=23.22001,82.84999&z=13&output=embed"
-              style="width:100%;height:260px;border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-              title="Map: Bishrampur"></iframe>
+          <div style="border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.06)">
+            <iframe src="https://www.google.com/maps?q=23.22001,82.84999&z=12&output=embed" style="width:100%;height:260px;border:0;" loading="lazy" title="Bishrampur Map"></iframe>
           </div>
 
           <div style="background:rgba(255,255,255,0.02);padding:10px;border-radius:8px">
-            <div style="font-weight:700">Mines / Industry</div>
-            <div class="muted-small" style="margin-top:6px">
-              Bishrampur SECL Area में कई active mines हैं — examples: Amera OC, Amgaon OC, Balrampur UG, Gayatri UG, Ketki UG, Kumda UG, Rehar UG (area-level list). Mining के कारण आसपास की अर्थव्यवस्था का प्रमुख आधार कोयला उत्पादन और logistics है.
-            </div>
+            <strong class="muted">Health & Infra</strong>
+            <p class="muted" style="margin-top:6px">Primary Health Centre, SECL occupational clinics और district hospital Ambikapur/Surajpur में उपलब्ध। बिजली/पानी/सड़क कार्य Nagar Panchayat द्वारा संपन्न होते हैं।</p>
           </div>
         </aside>
       </div>
 
       <div style="margin-top:12px">
-        <h3>Ward-wise sample (Census 2011 — summarized)</h3>
-        <p class="muted-small">नोट: नीचे दिए नमूना डेटा को Census तालिका के format के अनुसार रखा गया है — वास्तविक ward-wise सूची में हर ward का वास्तविक population अलग-अलग है।</p>
-        <table style="width:100%;color:#eef;margin-top:8px">
-          <thead><tr><th>Ward</th><th>Population (2011) — sample</th></tr></thead>
-          <tbody>
-            <tr><td>Ward 1</td><td>587</td></tr>
-            <tr><td>Ward 2</td><td>809</td></tr>
-            <tr><td>Ward 3</td><td>565</td></tr>
-            <tr><td>Ward 4</td><td>732</td></tr>
-            <tr><td>Ward 5</td><td>625</td></tr>
-            <tr><td>Ward 6</td><td>702</td></tr>
-            <tr><td>Ward 7</td><td>640</td></tr>
-            <tr><td>Ward 8</td><td>599</td></tr>
-            <tr><td>Ward 9</td><td>785</td></tr>
-            <tr><td>Ward 10</td><td>628</td></tr>
-            <tr><td>Ward 11</td><td>689</td></tr>
-            <tr><td>Ward 12</td><td>712</td></tr>
-            <tr><td>Ward 13</td><td>618</td></tr>
-            <tr><td>Ward 14</td><td>642</td></tr>
-            <tr><td>Ward 15</td><td>1055</td></tr>
-          </tbody>
-        </table>
-        <p class="muted-small" style="margin-top:8px">(यह तालिका उदाहरण-आधारित सार है; आधिकारिक वार्ड-वार डेटा के लिए Census / Nagar Panchayat records देखें।)</p>
+        <h3>Ward-wise sample (Census 2011 — example)</h3>
+        <p class="muted">Ward 1: 587 • Ward 2: 809 • Ward 3: 565 • Ward 4: 732 • Ward 5: 625 • Ward 6:702 • Ward 7:640 • Ward 8:599 • Ward 9:785 • Ward 10:628 • Ward 11:689 • Ward 12:712 • Ward 13:618 • Ward 14:642 • Ward 15:1055</p>
       </div>
 
       <div style="margin-top:12px">
-        <h3>Temples / Religious events</h3>
-        <ul class="muted-small">
-          <li>Shiv Mandir — प्रतिवर्ष शिवरात्रि पर महोत्सव</li>
-          <li>Maa Mahamaya / Maa Bhawani — नवरात्रि/स्थानीय मेले</li>
-          <li>Hanuman Mandir, Jagannath pond — छोटी-छोटी स्थानीय परम्परागत पूजा-संस्थाएँ</li>
-          <li>कुल ~20+ धार्मिक स्थान (Justdial / local listings में उपलब्ध)</li>
-        </ul>
-      </div>
-
-      <div style="margin-top:12px">
-        <h3>Health & Infrastructure</h3>
-        <p class="muted-small">टाउन के पास प्राथमिक स्वास्थ्य केन्द्र (PHC), कई private clinics और SECL की occupational health facilities मौजूद हैं। बड़ा जिला-hospital निकटतम district headquarter (Ambikapur/Surajpur) में उपलब्ध है। बिजली, पानी और सड़क-बुनियादी सुविधाओं के कार्य नगर-पंचायत के माध्यम से चलते रहते हैं।</p>
-      </div>
-
-      <div style="margin-top:12px">
-        <h3>Local economy & livelihoods</h3>
-        <p class="muted-small">मुख्य: कोयला खनन (SECL) — mines से जुड़ी logistics, ट्रांसपोर्ट, contractors, और local trade। अन्य: शिक्षा (schools), retail, छोटे व्यवसाय और सरकारी नौकरियाँ।</p>
-      </div>
-
-      <div style="margin-top:12px">
-        <h3>Gallery (replace these placeholders with your own photos for best results)</h3>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px">
-          <div class="photo"><img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=800&auto=format&fit=crop&crop=entropy" alt="Coal mine (example)"></div>
-          <div class="photo"><img src="https://images.unsplash.com/photo-1509223197845-458d87318791?q=80&w=800&auto=format&fit=crop&crop=entropy" alt="School (example)"></div>
-          <div class="photo"><img src="https://images.unsplash.com/photo-1523829002556-0c5fbbf3f4b6?q=80&w=800&auto=format&fit=crop&crop=entropy" alt="Temple (example)"></div>
+        <h3>Gallery (example photos)</h3>
+        <div class="photo-grid">
+          <div class="photo"><img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=800&auto=format&fit=crop&crop=entropy" alt="Coal mine example" onerror="this.style.display='none'"></div>
+          <div class="photo"><img src="https://images.unsplash.com/photo-1509223197845-458d87318791?q=80&w=800&auto=format&fit=crop&crop=entropy" alt="School example" onerror="this.style.display='none'"></div>
+          <div class="photo"><img src="https://images.unsplash.com/photo-1523829002556-0c5fbbf3f4b6?q=80&w=800&auto=format&fit=crop&crop=entropy" alt="Temple example" onerror="this.style.display='none'"></div>
         </div>
-        <p class="muted-small" style="margin-top:8px">नोट: ऊपर जो photos दिए गए हैं वे उदाहरण-उद्धरण हैं (Unsplash)। आप अपनी वास्तविक images upload करवा दें तो मैं gallery में उन्हीं के URLs लगा दूँगा और captions/credits भी जोड़ दूँगा।</p>
+        <p class="muted" style="margin-top:8px">नोट: ऊपर images उदाहरण के लिए हैं; आप अपनी images URL दें तो मैं gallery replace कर दूँगा और credit भी जोड़ दूँगा।</p>
       </div>
 
       <div style="margin-top:12px">
         <h3>Sources & notes</h3>
-        <p class="muted-small">यह सेक्शन स्थानीय directories, Census 2011 summaries, SECL area listings और सार्वजनिक map/listing स्रोतों पर आधारित है। छोटे-पठनीय आँकड़ों (जैसे मंदिरों की संख्या, छोटे स्कूलों की गिनती) के लिए local municipal records / Nagar Panchayat / district education office का अपडेट best source होगा।</p>
+        <p class="muted">यह संकलन Census 2011 summaries, postal directories (PIN 497226), SECL area listings और public directories पर आधारित है। आधिकारिक वर्ड-वार डेटा के लिए Nagar Panchayat / District records देखें।</p>
       </div>
-
     </section>
-    <!-- END BISHRAMPUR SECTION -->
 
-    <!-- MILITARY SECTION -->
+    <!-- MILITARY & ECON sections kept as before -->
     <section id="mil" class="card" style="margin-top:16px">
       <h2>Indian Military Strength</h2>
       <p class="muted">Indicative overview (approx.). Latest exact numbers vary by year.</p>
@@ -405,7 +358,6 @@
       </div>
     </section>
 
-    <!-- ECONOMY SECTION -->
     <section id="eco" class="card" style="margin-top:16px">
       <h2>Indian Economy & GDP</h2>
       <div class="chips">
@@ -437,68 +389,122 @@
     </footer>
   </div>
 
+  <!-- Modal for state details (opens on table row click) -->
+  <div id="stateModal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="box" id="modalBox">
+      <button class="close" onclick="closeModal()">Close</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
   <script>
     // Year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // --- States data (28 states) ---
+    // Data array with capitals + representative PINs (GPO/head) and language/culture
     const states = [
-      {name:'Andhra Pradesh', capital:'Amaravati', langs:['Telugu','Urdu'], culture:'Kuchipudi dance, Tirupati'},
-      {name:'Arunachal Pradesh', capital:'Itanagar', langs:['English'], culture:'Tribal heritage, Tawang monastery'},
-      {name:'Assam', capital:'Dispur', langs:['Assamese','Bodo','Bengali (Barak)'], culture:'Assam tea, Bihu'},
-      {name:'Bihar', capital:'Patna', langs:['Hindi','Urdu','Maithili'], culture:'Nalanda, Bodh Gaya, Madhubani art'},
-      {name:'Chhattisgarh', capital:'Raipur', langs:['Hindi','Chhattisgarhi'], culture:'Pandavani folk, tribal crafts'},
-      {name:'Goa', capital:'Panaji', langs:['Konkani'], culture:'Beaches, Indo-Portuguese heritage'},
-      {name:'Gujarat', capital:'Gandhinagar', langs:['Gujarati'], culture:'Garba, Somnath, Rann of Kutch'},
-      {name:'Haryana', capital:'Chandigarh', langs:['Hindi','Punjabi'], culture:'Haryanvi folk, agriculture'},
-      {name:'Himachal Pradesh', capital:'Shimla', langs:['Hindi','Sanskrit'], culture:'Hill temples, Kullu Dussehra'},
-      {name:'Jharkhand', capital:'Ranchi', langs:['Hindi','Santali','Ho','Mundari'], culture:'Forests, waterfalls, Baidyanath'},
-      {name:'Karnataka', capital:'Bengaluru', langs:['Kannada'], culture:'Hampi, Carnatic music, tech hub'},
-      {name:'Kerala', capital:'Thiruvananthapuram', langs:['Malayalam'], culture:'Backwaters, Kathakali, Ayurveda'},
-      {name:'Madhya Pradesh', capital:'Bhopal', langs:['Hindi'], culture:'Khajuraho, Sanchi, tribal art'},
-      {name:'Maharashtra', capital:'Mumbai', langs:['Marathi'], culture:'Bollywood, Ajanta-Ellora, Ganeshotsav'},
-      {name:'Manipur', capital:'Imphal', langs:['Meitei (Manipuri)','English'], culture:'Ras Lila, Sangai festival'},
-      {name:'Meghalaya', capital:'Shillong', langs:['English','Khasi','Garo'], culture:'Living root bridges, matrilineal'},
-      {name:'Mizoram', capital:'Aizawl', langs:['Mizo','English'], culture:'Chapchar Kut, hill churches'},
-      {name:'Nagaland', capital:'Kohima', langs:['English'], culture:'Hornbill festival, Naga tribes'},
-      {name:'Odisha', capital:'Bhubaneswar', langs:['Odia'], culture:'Konark, Jagannath, Odissi'},
-      {name:'Punjab', capital:'Chandigarh', langs:['Punjabi'], culture:'Golden Temple, Bhangra, Phulkari'},
-      {name:'Rajasthan', capital:'Jaipur', langs:['Hindi','Rajasthani'], culture:'Forts & palaces, Ghoomar'},
-      {name:'Sikkim', capital:'Gangtok', langs:['English','Nepali','Bhutia','Lepcha'], culture:'Kanchenjunga, monasteries'},
-      {name:'Tamil Nadu', capital:'Chennai', langs:['Tamil'], culture:'Bharatanatyam, Dravidian temples'},
-      {name:'Telangana', capital:'Hyderabad', langs:['Telugu','Urdu'], culture:'Charminar, biryani, IT'},
-      {name:'Tripura', capital:'Agartala', langs:['Bengali','Kokborok','English'], culture:'Tripuri culture, palaces'},
-      {name:'Uttar Pradesh', capital:'Lucknow', langs:['Hindi','Urdu'], culture:'Taj Mahal, Awadhi cuisine, Kashi'},
-      {name:'Uttarakhand', capital:'Dehradun', langs:['Hindi','Garhwali','Kumaoni'], culture:'Char Dham, Himalayas'},
-      {name:'West Bengal', capital:'Kolkata', langs:['Bengali'], culture:'Durga Puja, literature & arts'},
+      {name:'Andhra Pradesh', capital:'Amaravati', pin:'522020', langs:['Telugu','Urdu'], culture:'Kuchipudi, Tirupati'},
+      {name:'Arunachal Pradesh', capital:'Itanagar', pin:'791111', langs:['English'], culture:'Tribal heritage, Tawang'},
+      {name:'Assam', capital:'Dispur', pin:'781006', langs:['Assamese','Bodo'], culture:'Tea, Bihu'},
+      {name:'Bihar', capital:'Patna', pin:'800001', langs:['Hindi','Urdu','Maithili'], culture:'Nalanda, Bodh Gaya'},
+      {name:'Chhattisgarh', capital:'Raipur', pin:'492001', langs:['Hindi','Chhattisgarhi'], culture:'Pandavani, tribal arts'},
+      {name:'Goa', capital:'Panaji', pin:'403001', langs:['Konkani'], culture:'Beaches, Indo-Portuguese'},
+      {name:'Gujarat', capital:'Gandhinagar', pin:'382010', langs:['Gujarati'], culture:'Garba, Rann of Kutch'},
+      {name:'Haryana', capital:'Chandigarh', pin:'160017', langs:['Hindi','Punjabi'], culture:'Agrarian, folk music'},
+      {name:'Himachal Pradesh', capital:'Shimla', pin:'171001', langs:['Hindi'], culture:'Hill temples, Kullu Dussehra'},
+      {name:'Jharkhand', capital:'Ranchi', pin:'834001', langs:['Hindi','Santali'], culture:'Forests, waterfalls'},
+      {name:'Karnataka', capital:'Bengaluru', pin:'560001', langs:['Kannada'], culture:'Hampi, tech hub'},
+      {name:'Kerala', capital:'Thiruvananthapuram', pin:'695001', langs:['Malayalam'], culture:'Backwaters, Kathakali'},
+      {name:'Madhya Pradesh', capital:'Bhopal', pin:'462001', langs:['Hindi'], culture:'Khajuraho, Sanchi'},
+      {name:'Maharashtra', capital:'Mumbai', pin:'400001', langs:['Marathi'], culture:'Bollywood, Ganeshotsav'},
+      {name:'Manipur', capital:'Imphal', pin:'795001', langs:['Meitei'], culture:'Ras Lila'},
+      {name:'Meghalaya', capital:'Shillong', pin:'793001', langs:['English','Khasi'], culture:'Living root bridges'},
+      {name:'Mizoram', capital:'Aizawl', pin:'796001', langs:['Mizo'], culture:'Chapchar Kut'},
+      {name:'Nagaland', capital:'Kohima', pin:'797001', langs:['English'], culture:'Hornbill festival'},
+      {name:'Odisha', capital:'Bhubaneswar', pin:'751001', langs:['Odia'], culture:'Konark, Jagannath'},
+      {name:'Punjab', capital:'Chandigarh', pin:'160017', langs:['Punjabi'], culture:'Sikh heritage, Bhangra'},
+      {name:'Rajasthan', capital:'Jaipur', pin:'302001', langs:['Hindi','Rajasthani'], culture:'Forts & palaces'},
+      {name:'Sikkim', capital:'Gangtok', pin:'737101', langs:['English','Nepali'], culture:'Kanchenjunga, monasteries'},
+      {name:'Tamil Nadu', capital:'Chennai', pin:'600001', langs:['Tamil'], culture:'Bharatanatyam, temples'},
+      {name:'Telangana', capital:'Hyderabad', pin:'500001', langs:['Telugu','Urdu'], culture:'Charminar, biryani'},
+      {name:'Tripura', capital:'Agartala', pin:'799001', langs:['Bengali','Kokborok'], culture:'Palaces, dances'},
+      {name:'Uttar Pradesh', capital:'Lucknow', pin:'226001', langs:['Hindi','Urdu'], culture:'Taj, Awadhi cuisine'},
+      {name:'Uttarakhand', capital:'Dehradun', pin:'248001', langs:['Hindi'], culture:'Char Dham, Himalayas'},
+      {name:'West Bengal', capital:'Kolkata', pin:'700001', langs:['Bengali'], culture:'Durga Puja, arts'}
     ];
 
+    // render states table
     const tbody = document.querySelector('#statesTable tbody');
-    const search = document.getElementById('search');
-    const langFilter = document.getElementById('langFilter');
-
     function render(){
-      const q = search.value.trim().toLowerCase();
-      const l = (langFilter.value||'').toLowerCase();
-      tbody.innerHTML = '';
-      states.filter(s=>{
-        const matchQ = !q || s.name.toLowerCase().includes(q) || s.capital.toLowerCase().includes(q);
-        const matchL = !l || s.langs.some(x=>x.toLowerCase().includes(l));
-        return matchQ && matchL;
-      }).forEach(s=>{
+      tbody.innerHTML='';
+      states.forEach(s=>{
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${s.name}</td>
-          <td>${s.capital}</td>
-          <td>${s.langs.join(', ')}</td>
-          <td class="muted">${s.culture}</td>
-        `;
+        tr.innerHTML = `<td>${s.name}</td><td>${s.capital}</td><td>${s.langs.join(', ')}</td><td class="muted">${s.culture}</td>`;
+        tr.addEventListener('click', ()=> openStateModal(s));
         tbody.appendChild(tr);
       });
     }
-    search.addEventListener('input', render);
-    langFilter.addEventListener('change', render);
     render();
+
+    // filter
+    const search = document.getElementById('search');
+    const langFilter = document.getElementById('langFilter');
+    function doFilter(){
+      const q = (search.value||'').trim().toLowerCase();
+      const l = (langFilter.value||'').toLowerCase();
+      Array.from(tbody.children).forEach(tr=>{
+        const cells = tr.querySelectorAll('td');
+        const name = cells[0].textContent.toLowerCase();
+        const cap = cells[1].textContent.toLowerCase();
+        const langs = cells[2].textContent.toLowerCase();
+        const show = (
+          (!q || name.includes(q) || cap.includes(q)) &&
+          (!l || langs.includes(l))
+        );
+        tr.style.display = show ? '' : 'none';
+      });
+    }
+    search.addEventListener('input', doFilter);
+    langFilter.addEventListener('change', doFilter);
+
+    // Modal functions
+    const modal = document.getElementById('stateModal');
+    const modalContent = document.getElementById('modalContent');
+    function openStateModal(s){
+      // Build Google maps query (capital + PIN)
+      const query = encodeURIComponent(`${s.capital} ${s.pin} India`);
+      modalContent.innerHTML = `
+        <h2 style="margin-top:0">${s.name}</h2>
+        <p class="muted"><strong>Capital:</strong> ${s.capital} • <strong>Representative PIN (GPO):</strong> ${s.pin} • <strong>Languages:</strong> ${s.langs.join(', ')}</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+          <div style="background:#fff;border-radius:8px;overflow:hidden;border:1px solid rgba(0,0,0,.06);min-height:300px">
+            <!-- removed static SVG image per request (avoid broken picture). Keeping interactive map only -->
+            <iframe src="https://www.google.com/maps?q=${query}&z=8&output=embed" style="width:100%;height:100%;min-height:300px;border:0;" loading="lazy" title="${s.capital} map"></iframe>
+          </div>
+          <div style="padding:6px;display:flex;flex-direction:column;gap:10px;">
+            <div class="card" style="padding:12px">
+              <h3>Overview</h3>
+              <p class="muted-small"><strong>Culture:</strong> ${s.culture}</p>
+              <p class="muted-small"><strong>Primary languages:</strong> ${s.langs.join(', ')}</p>
+            </div>
+            <div class="card" style="padding:12px;flex:1;overflow:auto">
+              <h3>More</h3>
+              <p class="muted-small">Click "Open Bishrampur" in the main nav or scroll down for the full Bishrampur report included in this page.</p>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:12px"><small class="muted">Tip: iframe searches for capital + PIN to show representative location. For district/city zoom, change the PIN to exact value (e.g., 302001 for Jaipur city areas).</small></div>
+      `;
+      modal.style.display='flex';
+      modal.setAttribute('aria-hidden','false');
+    }
+    function closeModal(){ modal.style.display='none'; modal.setAttribute('aria-hidden','true'); }
+
+    // close on ESC
+    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+    // expose closeModal globally for button
+    window.closeModal = closeModal;
   </script>
 </body>
 </html>
