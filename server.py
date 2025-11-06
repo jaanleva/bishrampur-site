@@ -1,10 +1,9 @@
-from flask import Flask, request, jsonify
+# app.py (updated with your provided admin id/password)
+from flask import Flask, request, jsonify, session, redirect, url_for
 from flask_cors import CORS
 import pandas as pd
 from datetime import datetime
 import os
-import smtplib
-from email.mime.text import MIMEText
 import matplotlib.pyplot as plt
 import io
 import base64
@@ -12,13 +11,20 @@ import base64
 app = Flask(__name__)
 CORS(app)
 
+# ---------- CONFIG ----------
 DATA_FILE = 'student_registrations.csv'
 
-# ----------- EMAIL CONFIGURATION (CHANGE THESE) -----------
-SENDER_EMAIL = 'YOUR_PYTHON_SENDER_EMAIL@gmail.com'
-SENDER_PASSWORD = 'YOUR_GENERATED_APP_PASSWORD'
-RECEIVER_EMAIL = 'tolaxsamrtb@gmail.com'
-# ----------------------------------------------------------
+# Admin credentials: default set to what you provided.
+# NOTE: This is insecure for production. Prefer environment variables.
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'vishnu singh')   # your provided id
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', '4321')     # your provided password
+
+# Flask session secret key (set this to a strong random value in production)
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'replace-this-with-secure-random-key')
+
+# Toggle: if you ever want to re-enable email sending, set to True and implement send_email_notification properly.
+ENABLE_EMAIL_NOTIFICATIONS = False
+# ----------------------------
 
 def save_to_csv(data):
     """Saves new registration data to a CSV file."""
@@ -27,32 +33,6 @@ def save_to_csv(data):
     df_new = pd.DataFrame([data])
     df_new.to_csv(DATA_FILE, mode='a', index=False, header=not file_exists)
     print(f"✅ Data saved to {DATA_FILE}: {data}")
-
-def send_email_notification(student_data):
-    """Sends an email notification when a new student registers."""
-    try:
-        subject = f"NEW REGISTRATION: {student_data.get('course', 'Unknown')} from {student_data.get('name', 'Anonymous')}"
-        body = (
-            f"New Student Registration Details:\n\n"
-            f"Name: {student_data.get('name', 'N/A')}\n"
-            f"Mobile: {student_data.get('mobile', 'N/A')}\n"
-            f"Course: {student_data.get('course', 'N/A')}\n"
-            f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
-        )
-
-        msg = MIMEText(body)
-        msg['Subject'] = subject
-        msg['From'] = SENDER_EMAIL
-        msg['To'] = RECEIVER_EMAIL
-
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
-            server.login(SENDER_EMAIL, SENDER_PASSWORD)
-            server.sendmail(SENDER_EMAIL, RECEIVER_EMAIL, msg.as_string())
-
-        print(f"📩 Email notification sent successfully to {RECEIVER_EMAIL}")
-
-    except Exception as e:
-        print(f"⚠️ EMAIL ERROR: {e}")
 
 def generate_course_graph(df):
     """Generates a bar chart of course registrations and returns it as a Base64 string."""
@@ -81,7 +61,10 @@ def generate_course_graph(df):
 
 @app.route('/register', methods=['POST'])
 def register_student():
-    """Endpoint to receive registration data, save it, and send email."""
+    """
+    Public endpoint to receive registration data and save it.
+    Students do NOT need any password — they simply post JSON with name, mobile, course (and optionally other fields).
+    """
     if not request.is_json:
         return jsonify({"error": "Request must be JSON"}), 400
 
@@ -91,15 +74,64 @@ def register_student():
 
     try:
         save_to_csv(student_data)
-        send_email_notification(student_data)
-        return jsonify({"message": "✅ Registration successful and notification sent!"}), 200
+        return jsonify({"message": "✅ Registration successful!"}), 200
     except Exception as e:
         print(f"Critical error in registration process: {e}")
         return jsonify({"error": "A critical server error occurred."}), 500
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """
+    Simple admin login page and API.
+    - GET: returns a small HTML login form (for browser).
+    - POST: accepts JSON { "email": "...", "password": "..." } and sets session if valid.
+    """
+    if request.method == 'GET':
+        return f"""
+        <html><body style="font-family:Arial,sans-serif;padding:30px;">
+        <h2>Admin Login</h2>
+        <form method="post" action="/login">
+          <label>ID: <input type="text" name="email"></label><br><br>
+          <label>Password: <input type="password" name="password"></label><br><br>
+          <input type="submit" value="Login">
+        </form>
+        <p>Default ID: <strong>{ADMIN_EMAIL}</strong> | Password: <strong>{ADMIN_PASSWORD}</strong></p>
+        <p>Note: For security, prefer setting ADMIN_EMAIL and ADMIN_PASSWORD as environment variables.</p>
+        </body></html>
+        """
+    # POST: accept form-data or JSON
+    data = request.get_json(silent=True) or request.form
+    email = data.get('email')
+    password = data.get('password')
+
+    if email == ADMIN_EMAIL and password == ADMIN_PASSWORD:
+        session['admin_logged_in'] = True
+        if request.is_json:
+            return jsonify({"message": "Login successful"}), 200
+        else:
+            return redirect(url_for('admin_dashboard'))
+    else:
+        if request.is_json:
+            return jsonify({"error": "Invalid credentials"}), 401
+        else:
+            return "<h3>Invalid credentials. <a href='/login'>Try again</a></h3>", 401
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    session.pop('admin_logged_in', None)
+    return "<h3>Logged out. <a href='/login'>Login again</a></h3>"
+
 @app.route('/dashboard', methods=['GET'])
 def admin_dashboard():
-    """Displays the list of registrations and a dynamic graph."""
+    """
+    Protected dashboard — only visible to admin when logged in via /login.
+    Shows table + graph.
+    """
+    if not session.get('admin_logged_in'):
+        if request.headers.get('Accept', '').startswith('application/json'):
+            return jsonify({"error": "Unauthorized. Please login at /login"}), 401
+        return redirect(url_for('login'))
+
     try:
         if not os.path.exists(DATA_FILE):
             return "<h3 style='text-align:center;'>No registrations found yet.</h3>", 200
@@ -114,7 +146,7 @@ def admin_dashboard():
             f'style="max-width:800px;width:100%;height:auto;margin:30px auto;display:block;'
             f'border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,0.1);">'
             if graph_data_uri
-            else '<p style="text-align: center;">Not enough data (minimum 1 registration) for the graph yet.</p>'
+            else '<p style="text-align: center;">Not enough data for the graph yet.</p>'
         )
 
         response_html = f"""
@@ -126,6 +158,7 @@ def admin_dashboard():
                 box-shadow:0 2px 10px rgba(0,0,0,0.05);">
                 <h2 style="color:#FF9933;">Statistics Overview</h2>
                 <p>Total Registrations: <strong style="font-size:1.2em;">{total_registrations}</strong></p>
+                <p><a href="/logout">Logout</a></p>
             </div>
             {graph_tag}
             <h2 style="color:#003366; text-align:center;">All Registrations Data</h2>
