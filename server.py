@@ -1,5 +1,5 @@
-# app.py (updated with your provided admin id/password)
-from flask import Flask, request, jsonify, session, redirect, url_for
+# app.py (with landing page + Admin Login button / in-page login form)
+from flask import Flask, request, jsonify, session, redirect, url_for, make_response
 from flask_cors import CORS
 import pandas as pd
 from datetime import datetime
@@ -15,14 +15,12 @@ CORS(app)
 DATA_FILE = 'student_registrations.csv'
 
 # Admin credentials: default set to what you provided.
-# NOTE: This is insecure for production. Prefer environment variables.
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'vishnu singh')   # your provided id
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', '4321')     # your provided password
 
 # Flask session secret key (set this to a strong random value in production)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'replace-this-with-secure-random-key')
 
-# Toggle: if you ever want to re-enable email sending, set to True and implement send_email_notification properly.
 ENABLE_EMAIL_NOTIFICATIONS = False
 # ----------------------------
 
@@ -59,11 +57,147 @@ def generate_course_graph(df):
     graph_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
     return f"data:image/png;base64,{graph_base64}"
 
+@app.route('/', methods=['GET'])
+def index():
+    """Landing page with Admin Login button and public registration form."""
+    # Simple page: top-right admin login button; clicking shows login form; below is student register form.
+    page = f"""
+    <!doctype html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Student Registration</title>
+      <style>
+        body{{font-family: Arial, sans-serif; background:#f4f7f9; margin:0; padding:0;}}
+        .header{{background:#003366;color:#fff;padding:20px 30px;display:flex;justify-content:space-between;align-items:center}}
+        .container{{max-width:900px;margin:30px auto;padding:20px;background:#fff;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.05)}}
+        .btn{{background:#FF9933;color:#fff;padding:10px 16px;border:none;border-radius:6px;cursor:pointer}}
+        .btn-secondary{{background:#0070c0}}
+        .login-panel{{display:none;position:fixed;right:30px;top:80px;background:#fff;padding:16px;border-radius:8px;box-shadow:0 6px 30px rgba(0,0,0,0.15);width:300px;}}
+        label{{display:block;margin-top:8px}}
+        input[type=text], input[type=password]{{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;margin-top:6px}}
+        .form-row{{margin-bottom:10px}}
+        .success{{color:green}}
+        .error{{color:red}}
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div><h2 style="margin:0">Registration Portal</h2></div>
+        <div>
+          <button class="btn" id="adminBtn">Admin Login</button>
+        </div>
+      </div>
+
+      <div class="container">
+        <h3>Public Student Registration</h3>
+        <p>Students can register without any ID/password — fill below.</p>
+        <div id="regMsg"></div>
+        <div style="max-width:600px;">
+          <div class="form-row">
+            <label>Name</label>
+            <input type="text" id="name">
+          </div>
+          <div class="form-row">
+            <label>Mobile</label>
+            <input type="text" id="mobile">
+          </div>
+          <div class="form-row">
+            <label>Course</label>
+            <input type="text" id="course" placeholder="Example: Python Basic">
+          </div>
+          <button class="btn btn-secondary" onclick="submitRegistration()">Register</button>
+        </div>
+      </div>
+
+      <!-- In-page login panel -->
+      <div class="login-panel" id="loginPanel">
+        <h4 style="margin-top:0">Admin Login</h4>
+        <div id="loginMsg"></div>
+        <form id="loginForm" onsubmit="return submitLogin();">
+          <label>ID</label>
+          <input type="text" id="loginId" value="{ADMIN_EMAIL}">
+          <label>Password</label>
+          <input type="password" id="loginPassword" value="{ADMIN_PASSWORD}">
+          <div style="margin-top:12px;display:flex;justify-content:space-between;">
+            <button class="btn" type="submit">Login</button>
+            <button class="btn" type="button" onclick="closeLogin()" style="background:#999">Close</button>
+          </div>
+        </form>
+      </div>
+
+      <script>
+        const adminBtn = document.getElementById('adminBtn');
+        const loginPanel = document.getElementById('loginPanel');
+        adminBtn.addEventListener('click', ()=> {{
+          loginPanel.style.display = (loginPanel.style.display === 'block') ? 'none' : 'block';
+        }});
+        function closeLogin() {{ loginPanel.style.display = 'none'; }}
+
+        // Submit registration via fetch to /register (JSON)
+        async function submitRegistration() {{
+          const name = document.getElementById('name').value.trim();
+          const mobile = document.getElementById('mobile').value.trim();
+          const course = document.getElementById('course').value.trim();
+          const msgDiv = document.getElementById('regMsg');
+          msgDiv.innerHTML = '';
+          if(!name || !mobile || !course){{ msgDiv.innerHTML = '<p class="error">Please fill all fields.</p>'; return; }}
+          try {{
+            const res = await fetch('/register', {{
+              method: 'POST',
+              headers: {{ 'Content-Type': 'application/json' }},
+              body: JSON.stringify({{ name, mobile, course }})
+            }});
+            const data = await res.json();
+            if(res.ok) {{
+              msgDiv.innerHTML = '<p class="success">' + data.message + '</p>';
+              document.getElementById('name').value='';document.getElementById('mobile').value='';document.getElementById('course').value='';
+            }} else {{
+              msgDiv.innerHTML = '<p class="error">' + (data.error || 'Error') + '</p>';
+            }}
+          }} catch(err) {{
+            msgDiv.innerHTML = '<p class="error">Request failed.</p>';
+          }}
+        }}
+
+        // Submit login - posts form to /login and, on success, redirect to /dashboard
+        async function submitLogin() {{
+          const id = document.getElementById('loginId').value.trim();
+          const password = document.getElementById('loginPassword').value.trim();
+          const loginMsg = document.getElementById('loginMsg');
+          loginMsg.innerHTML = '';
+          if(!id || !password){{ loginMsg.innerHTML = '<p class="error">Fill credentials.</p>'; return false; }}
+          try {{
+            const res = await fetch('/login', {{
+              method: 'POST',
+              headers: {{ 'Content-Type': 'application/json' }},
+              body: JSON.stringify({{ email: id, password: password }})
+            }});
+            const data = await res.json();
+            if(res.ok) {{
+              // Redirect to dashboard
+              window.location.href = '/dashboard';
+            }} else {{
+              loginMsg.innerHTML = '<p class="error">' + (data.error || 'Invalid credentials') + '</p>';
+            }}
+          }} catch(err) {{
+            loginMsg.innerHTML = '<p class="error">Login failed.</p>';
+          }}
+          return false; // prevent normal form submit
+        }}
+      </script>
+    </body>
+    </html>
+    """
+    resp = make_response(page)
+    resp.headers['Content-Type'] = 'text/html'
+    return resp
+
 @app.route('/register', methods=['POST'])
 def register_student():
     """
     Public endpoint to receive registration data and save it.
-    Students do NOT need any password — they simply post JSON with name, mobile, course (and optionally other fields).
+    Students do NOT need any password — they simply post JSON with name, mobile, course.
     """
     if not request.is_json:
         return jsonify({"error": "Request must be JSON"}), 400
@@ -82,44 +216,29 @@ def register_student():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """
-    Simple admin login page and API.
-    - GET: returns a small HTML login form (for browser).
-    - POST: accepts JSON { "email": "...", "password": "..." } and sets session if valid.
+    Accepts JSON { "email": "...", "password": "..." } and sets session if valid.
+    Also supports form POST (for browser fallback).
     """
     if request.method == 'GET':
-        return f"""
-        <html><body style="font-family:Arial,sans-serif;padding:30px;">
-        <h2>Admin Login</h2>
-        <form method="post" action="/login">
-          <label>ID: <input type="text" name="email"></label><br><br>
-          <label>Password: <input type="password" name="password"></label><br><br>
-          <input type="submit" value="Login">
-        </form>
-        <p>Default ID: <strong>{ADMIN_EMAIL}</strong> | Password: <strong>{ADMIN_PASSWORD}</strong></p>
-        <p>Note: For security, prefer setting ADMIN_EMAIL and ADMIN_PASSWORD as environment variables.</p>
-        </body></html>
-        """
-    # POST: accept form-data or JSON
+        # Redirect to home where the login button exists
+        return redirect(url_for('index'))
+
+    # POST: accept JSON or form-data
     data = request.get_json(silent=True) or request.form
     email = data.get('email')
     password = data.get('password')
 
     if email == ADMIN_EMAIL and password == ADMIN_PASSWORD:
         session['admin_logged_in'] = True
-        if request.is_json:
-            return jsonify({"message": "Login successful"}), 200
-        else:
-            return redirect(url_for('admin_dashboard'))
+        # return JSON for JS clients
+        return jsonify({"message": "Login successful"}), 200
     else:
-        if request.is_json:
-            return jsonify({"error": "Invalid credentials"}), 401
-        else:
-            return "<h3>Invalid credentials. <a href='/login'>Try again</a></h3>", 401
+        return jsonify({"error": "Invalid credentials"}), 401
 
 @app.route('/logout', methods=['GET'])
 def logout():
     session.pop('admin_logged_in', None)
-    return "<h3>Logged out. <a href='/login'>Login again</a></h3>"
+    return redirect(url_for('index'))
 
 @app.route('/dashboard', methods=['GET'])
 def admin_dashboard():
@@ -128,9 +247,7 @@ def admin_dashboard():
     Shows table + graph.
     """
     if not session.get('admin_logged_in'):
-        if request.headers.get('Accept', '').startswith('application/json'):
-            return jsonify({"error": "Unauthorized. Please login at /login"}), 401
-        return redirect(url_for('login'))
+        return redirect(url_for('index'))
 
     try:
         if not os.path.exists(DATA_FILE):
@@ -154,7 +271,7 @@ def admin_dashboard():
         <head><title>Admin Dashboard</title></head>
         <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f7f9;">
             <h1 style="color:#003366; text-align:center;">Student Registration Dashboard</h1>
-            <div style="max-width:800px;margin:20px auto;padding:15px;background:#fff;border-radius:8px;
+            <div style="max-width:900px;margin:20px auto;padding:15px;background:#fff;border-radius:8px;
                 box-shadow:0 2px 10px rgba(0,0,0,0.05);">
                 <h2 style="color:#FF9933;">Statistics Overview</h2>
                 <p>Total Registrations: <strong style="font-size:1.2em;">{total_registrations}</strong></p>
