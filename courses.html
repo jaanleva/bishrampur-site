@@ -1,98 +1,779 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Courses Offered - PGDCA, DCA, BCA, Tally | Sri Sai Computer Education</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css"> 
+  <meta charset="UTF-8" />
+  <title>Study with Vishnu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --green: #0d8a4b;
+      --green-soft: #e8ffe9;
+      --green-dark: #0b5c34;
+      --bg: #f7f8fa;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --radius-lg: 18px;
+      --shadow-soft: 0 12px 30px rgba(15, 118, 110, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .page {
+      min-height: 100vh;
+      max-width: 980px;
+      margin: 0 auto;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.03);
+    }
+
+    /* Top bar (time / status type feeling) optional */
+    .top-strip {
+      height: 8px;
+      background: linear-gradient(90deg, #22c55e, #22c55e 40%, #a855f7);
+    }
+
+    /* NAVBAR */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--green-dark);
+    }
+
+    .brand-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--green-soft);
+      font-size: 18px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      font-size: 0.95rem;
+    }
+
+    .nav-link {
+      cursor: pointer;
+      color: var(--text-muted);
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .nav-link.active {
+      color: var(--green-dark);
+      font-weight: 600;
+    }
+
+    .nav-link.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--green);
+    }
+
+    /* MAIN LAYOUT */
+    main {
+      padding: 18px 18px 28px;
+    }
+
+    /* HERO SECTION */
+    .hero {
+      border-radius: 24px;
+      padding: 26px 22px 30px;
+      background: radial-gradient(circle at top left, #dcfce7, #f9fafb 55%);
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 24px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(22, 163, 74, 0.08);
+      font-size: 0.78rem;
+      color: var(--green-dark);
+      margin-bottom: 12px;
+    }
+
+    .hero-title {
+      font-size: 1.7rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: var(--green-dark);
+    }
+
+    .hero-subtitle {
+      font-size: 0.94rem;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin-bottom: 18px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .btn-primary {
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      border: none;
+      background: var(--green);
+      color: #ffffff;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 20px rgba(34, 197, 94, 0.45);
+    }
+
+    .btn-primary span.icon {
+      font-size: 1rem;
+    }
+
+    .btn-ghost {
+      border-radius: 999px;
+      padding: 9px 16px;
+      font-size: 0.9rem;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(255, 255, 255, 0.7);
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .hero-meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* STUDY NOTES SECTION */
+    .section {
+      margin-bottom: 34px;
+    }
+
+    .section h2 {
+      font-size: 1.3rem;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .section p.section-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    .notes-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    .search-input {
+      flex: 1 1 180px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 7px 12px;
+      background: #ffffff;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .search-input input {
+      border: none;
+      outline: none;
+      font-size: 0.9rem;
+      flex: 1;
+      background: transparent;
+    }
+
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 5px 11px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      background: #ffffff;
+    }
+
+    .chip.active {
+      background: #dcfce7;
+      color: var(--green-dark);
+      border-color: #4ade80;
+      font-weight: 600;
+    }
+
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    .note-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 14px 14px 16px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .note-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .note-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      background: #ecfdf3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .note-title {
+      font-size: 0.98rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .note-tag {
+      display: inline-flex;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #dcfce7;
+      font-size: 0.7rem;
+      color: var(--green-dark);
+      font-weight: 600;
+    }
+
+    .note-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .note-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .note-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .note-download-btn {
+      margin-top: 10px;
+      border-radius: 999px;
+      border: none;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: #22c55e;
+      color: #ffffff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* ABOUT + QUICK LINKS + CONTACT */
+    .split-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+      gap: 24px;
+    }
+
+    .card {
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      padding: 16px 16px 18px;
+    }
+
+    .card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .quick-links-list {
+      list-style: none;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.9rem;
+    }
+
+    .quick-links-list li {
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .quick-links-list li span {
+      color: var(--green-dark);
+      font-weight: 600;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 6px;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+    }
+
+    .contact-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: #ecfdf3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--green-dark);
+      flex-shrink: 0;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 14px 18px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      background: #f9fafb;
+    }
+
+    footer .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .badge-emergent {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      font-size: 0.75rem;
+    }
+
+    @media (max-width: 720px) {
+      .nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .split-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 20px 16px 22px;
+      }
+    }
+  </style>
 </head>
 <body>
+<div class="page">
+  <div class="top-strip"></div>
 
-    <header class="main-header">
-        <div class="logo-name">SRI SAI COMPUTER EDUCATION</div>
-        <nav class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="courses.html">Courses</a>
-            <a href="admission.html">Apply Now</a>
-            <a href="admission.html">Contact</a>
-        </nav>
-    </header>
+  <header>
+    <nav class="nav">
+      <div class="brand">
+        <div class="brand-icon">📚</div>
+        <span>Study with Vishnu</span>
+      </div>
+      <div class="nav-links">
+        <div class="nav-link active" data-section="notes">Notes</div>
+        <div class="nav-link" data-section="about">About</div>
+        <div class="nav-link" data-section="contact">Contact</div>
+      </div>
+    </nav>
+  </header>
 
-    <h2 class="page-title">Explore Our Job-Ready Computer Courses</h2>
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-badge">
+        <span>🎓 Computer Applications</span>
+        <span>• Excel • Word • PowerPoint</span>
+      </div>
+      <h1 class="hero-title">Study with Vishnu</h1>
+      <p class="hero-subtitle">
+        Access quality PDF notes for Microsoft Office. Download materials for Excel, Word and more,
+        and level up your computer skills step-by-step.
+      </p>
+      <div class="hero-actions">
+        <button class="btn-primary">
+          <span class="icon">⬇</span>
+          Browse Notes
+        </button>
+        <button class="btn-ghost">
+          ⬆ Upload Notes
+        </button>
+      </div>
+      <div class="hero-meta">
+        <span>📅 Updated: Jan 2025</span>
+        <span>👀 600+ total downloads</span>
+        <span>✅ Free study resources</span>
+      </div>
+    </section>
 
-    <div class="course-container">
+    <!-- STUDY NOTES -->
+    <section class="section" id="section-notes">
+      <h2>Study Notes</h2>
+      <p class="section-subtitle">
+        Download comprehensive PDF notes prepared for easy learning.
+      </p>
 
-        <div class="course-card" id="pgdca">
-            <h3>PGDCA</h3>
-            <span class="course-tag">1 Year Diploma | Eligibility: Any Graduate</span>
-            <p class="course-description">
-                **Why this course?** Gateway to a professional IT career after graduation. Comprehensive, recognized qualification for high-level office roles.
-            </p>
-            <ul class="details-list">
-                <li>Fundamentals & Advanced MS Office Suite</li>
-                <li>Programming Concepts (C / C++)</li>
-                <li>Database Management (SQL/Access)</li>
-                <li>Internet Technologies & Web Basics</li>
-            </ul>
-            <a href="admission.html?course=pgdca" class="global-cta">Register for PGDCA &rarr;</a>
+      <div class="notes-controls">
+        <div class="search-input">
+          🔍
+          <input type="text" placeholder="Search notes..." />
+        </div>
+        <div class="filter-chips">
+          <button class="chip active" data-filter="all">All Subjects (6)</button>
+          <button class="chip" data-filter="excel">Microsoft Excel (3)</button>
+          <button class="chip" data-filter="word">Microsoft Word (3)</button>
+        </div>
+      </div>
+
+      <div class="notes-grid">
+        <!-- EXCEL BASIC -->
+        <article class="note-card" data-category="excel">
+          <div class="note-header">
+            <div class="note-icon">📄</div>
+            <div>
+              <div class="note-title">Microsoft Excel – Basic Functions</div>
+              <div class="note-tag">Excel</div>
+              <p class="note-desc">
+                Learn cells, ranges, SUM, AVERAGE, MIN, MAX and basic formatting –
+                perfect for beginners.
+              </p>
+            </div>
+          </div>
+          <div class="note-meta">
+            <span>📅 15/01/2025</span>
+            <span>👁 245 downloads</span>
+            <span>📁 2.5 MB</span>
+          </div>
+          <button class="note-download-btn">
+            ⬇ Download (2.5 MB)
+          </button>
+        </article>
+
+        <!-- EXCEL ADVANCED -->
+        <article class="note-card" data-category="excel">
+          <div class="note-header">
+            <div class="note-icon">📄</div>
+            <div>
+              <div class="note-title">Microsoft Excel – Advanced Formulas</div>
+              <div class="note-tag">Excel</div>
+              <p class="note-desc">
+                Master VLOOKUP, HLOOKUP, INDEX-MATCH, combined formulas, and
+                practical examples for data analysis.
+              </p>
+            </div>
+          </div>
+          <div class="note-meta">
+            <span>📅 20/01/2025</span>
+            <span>👁 189 downloads</span>
+            <span>📁 3.8 MB</span>
+          </div>
+          <button class="note-download-btn">
+            ⬇ Download (3.8 MB)
+          </button>
+        </article>
+
+        <!-- EXCEL PRACTICE -->
+        <article class="note-card" data-category="excel">
+          <div class="note-header">
+            <div class="note-icon">📄</div>
+            <div>
+              <div class="note-title">Excel Practice – Assignment Sheets</div>
+              <div class="note-tag">Excel</div>
+              <p class="note-desc">
+                50+ practice questions with solutions to build strong command
+                over formulas and functions.
+              </p>
+            </div>
+          </div>
+          <div class="note-meta">
+            <span>📅 25/01/2025</span>
+            <span>👁 130 downloads</span>
+            <span>📁 2.9 MB</span>
+          </div>
+          <button class="note-download-btn">
+            ⬇ Download (2.9 MB)
+          </button>
+        </article>
+
+        <!-- WORD BASIC -->
+        <article class="note-card" data-category="word">
+          <div class="note-header">
+            <div class="note-icon">📄</div>
+            <div>
+              <div class="note-title">Microsoft Word – Basics</div>
+              <div class="note-tag">Word</div>
+              <p class="note-desc">
+                Introduction to typing, formatting, page setup, saving and printing documents.
+              </p>
+            </div>
+          </div>
+          <div class="note-meta">
+            <span>📅 18/01/2025</span>
+            <span>👁 160 downloads</span>
+            <span>📁 2.1 MB</span>
+          </div>
+          <button class="note-download-btn">
+            ⬇ Download (2.1 MB)
+          </button>
+        </article>
+
+        <!-- WORD FORMATTING -->
+        <article class="note-card" data-category="word">
+          <div class="note-header">
+            <div class="note-icon">📄</div>
+            <div>
+              <div class="note-title">Word – Formatting & Styles</div>
+              <div class="note-tag">Word</div>
+              <p class="note-desc">
+                Learn bullet points, numbering, styles, headers-footers,
+                and professional document layout.
+              </p>
+            </div>
+          </div>
+          <div class="note-meta">
+            <span>📅 22/01/2025</span>
+            <span>👁 115 downloads</span>
+            <span>📁 2.3 MB</span>
+          </div>
+          <button class="note-download-btn">
+            ⬇ Download (2.3 MB)
+          </button>
+        </article>
+
+        <!-- WORD ADVANCED -->
+        <article class="note-card" data-category="word">
+          <div class="note-header">
+            <div class="note-icon">📄</div>
+            <div>
+              <div class="note-title">Word – Advanced Tools</div>
+              <div class="note-tag">Word</div>
+              <p class="note-desc">
+                Table of contents, mail merge, templates and time-saving shortcuts
+                for office work.
+              </p>
+            </div>
+          </div>
+          <div class="note-meta">
+            <span>📅 28/01/2025</span>
+            <span>👁 98 downloads</span>
+            <span>📁 3.0 MB</span>
+          </div>
+          <button class="note-download-btn">
+            ⬇ Download (3.0 MB)
+          </button>
+        </article>
+      </div>
+    </section>
+
+    <!-- ABOUT + CONTACT BLOCKS -->
+    <section class="section" id="section-about">
+      <div class="split-layout">
+        <div class="card">
+          <h3>About Study with Vishnu</h3>
+          <p>
+            Study with Vishnu is focused on helping students learn computer
+            applications in a simple and practical way. Notes are prepared
+            considering school, competitive exams, and real-life office work.
+            Content is kept short, clear, and easy to revise.
+          </p>
         </div>
 
-        <div class="course-card" id="dca">
-            <h3>DCA</h3>
-            <span class="course-tag">6-12 Months Diploma | Eligibility: 10th/12th Pass</span>
-            <p class="course-description">
-                **Why this course?** Must-have qualification for all modern office, data entry, and Govt. jobs where computer proficiency is essential.
-            </p>
-            <ul class="details-list">
-                <li>Operating Systems and PC Troubleshooting</li>
-                <li>Mastering MS Word, Excel (Advanced), and PowerPoint</li>
-                <li>Internet, Email Management, and Digital Literacy</li>
-                <li>Basic Accounting Principles</li>
-            </ul>
-            <a href="admission.html?course=dca" class="global-cta">Register for DCA &rarr;</a>
+        <div class="card">
+          <h3>Quick Links</h3>
+          <ul class="quick-links-list">
+            <li><span>Study Notes</span> – Excel &amp; Word PDFs</li>
+            <li>About Us – Course details and teaching style</li>
+            <li>Contact – Phone, email &amp; location</li>
+          </ul>
         </div>
+      </div>
+    </section>
 
-        <div class="course-card" id="bca">
-            <h3>BCA</h3>
-            <span class="course-tag">3 Year Degree | Eligibility: 10+2</span>
-            <p class="course-description">
-                **Why this course?** Build a deep foundation for a high-growth career in software development and IT infrastructure. (Note: Subject to university affiliation)
-            </p>
-            <ul class="details-list">
-                <li>Core Programming Languages (Python/Java)</li>
-                <li>Data Structures & Algorithms</li>
-                <li>Networking and System Administration</li>
-                <li>Software Engineering Principles</li>
-            </ul>
-            <a href="admission.html?course=bca" class="global-cta">Register for BCA &rarr;</a>
-        </div>
-
-        <div class="course-card" id="tally">
-            <h3>Tally Prime (with GST)</h3>
-            <span class="course-tag">Certificate Course | Duration: 2-3 Months</span>
-            <p class="course-description">
-                **Why this course?** Instantly qualify for Accountant and Bookkeeper roles in any business. Focus on practical, industry-relevant accounting.
-            </p>
-            <ul class="details-list">
-                <li>Accounting Fundamentals & Vouchers</li>
-                <li>Inventory and Payroll Management</li>
-                <li>Taxation and **GST Implementation**</li>
-                <li>Final Accounts and Reporting</li>
-            </ul>
-            <a href="admission.html?course=tally" class="global-cta">Register for Tally &rarr;</a>
-        </div>
-
-    </div>
-
-    <footer class="footer">
-        <p class="footer-info">
-            📍 SAI MANDIR, Bishrampur (C.G.) |
-            <a href="tel:8770436371">87704-36371</a> |
-            <a href="tel:8120194460">81201-94460</a>
+    <section class="section" id="section-contact">
+      <div class="card">
+        <h3>Contact Us</h3>
+        <p>
+          Have any doubt regarding notes, classes or computer basics?
+          Reach out using the details below.
         </p>
-        <p>&copy; 2025 Sri Sai Computer Education. All Rights Reserved.</p>
-    </footer>
 
+        <div class="contact-item">
+          <div class="contact-icon">✉</div>
+          <div>vs2337656@gmail.com</div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon">📞</div>
+          <div>+91 9302883758</div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div>
+            Study with Vishnu – Coaching Classes<br />
+            Main Road, City
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-row">
+      <div>© 2025 Study with Vishnu. All rights reserved.</div>
+      <div class="badge-emergent">
+        <span>⚙</span>
+        <span>Made with Emergent</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // NAV TAB SWITCHING (scroll to section)
+  const navLinks = document.querySelectorAll(".nav-link");
+  navLinks.forEach(link => {
+    link.addEventListener("click", () => {
+      navLinks.forEach(l => l.classList.remove("active"));
+      link.classList.add("active");
+      const sectionId = "section-" + link.dataset.section;
+      const section = document.getElementById(sectionId);
+      if (section) {
+        window.scrollTo({
+          top: section.offsetTop - 80,
+          behavior: "smooth"
+        });
+      }
+    });
+  });
+
+  // FILTER NOTES
+  const chips = document.querySelectorAll(".chip");
+  const noteCards = document.querySelectorAll(".note-card");
+
+  chips.forEach(chip => {
+    chip.addEventListener("click", () => {
+      chips.forEach(c => c.classList.remove("active"));
+      chip.classList.add("active");
+      const filter = chip.dataset.filter;
+      noteCards.forEach(card => {
+        const cat = card.dataset.category;
+        card.style.display =
+          filter === "all" || filter === cat ? "flex" : "none";
+      });
+    });
+  });
+</script>
 </body>
 </html>
